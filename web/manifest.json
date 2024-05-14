@@ -1,6 +1,6 @@
 {
-    "name": "simple_calculator",
-    "short_name": "simple_calculator",
+    "name": "signal_calculator",
+    "short_name": "signal_calculator",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

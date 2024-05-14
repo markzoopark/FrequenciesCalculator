@@ -1,4 +1,4 @@
-# simple_calculator
+# signal_calculator
 
 A new Flutter project.
 
