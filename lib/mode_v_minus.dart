@@ -155,7 +155,7 @@ class _ModeVMinusState extends State<ModeVMinus> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Передавач (МГц)',
+            Text('Передавач (МГц) RF-IF=LO',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
             _buildTextField(
                 controller: _controllerRF1,
@@ -178,7 +178,7 @@ class _ModeVMinusState extends State<ModeVMinus> {
               ],
             ),
             SizedBox(height: 20),
-            Text('Приймач (МГц)',
+            Text('Приймач (МГц) IF-RF=LO',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
             _buildTextField(
                 controller: _controllerIF2,

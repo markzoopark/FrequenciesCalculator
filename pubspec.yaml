@@ -61,6 +61,7 @@ flutter:
         - assets/line_of_sight.png
         - assets/dipole.png
         - assets/lambda.png
+        - assets/dipole_lambda.png
 
     # An image asset can refer to one or more resolution-specific "variants", see
     # https://flutter.dev/assets-and-images/#resolution-aware

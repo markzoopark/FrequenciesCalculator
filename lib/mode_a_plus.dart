@@ -51,17 +51,7 @@ class _ModeAPlusState extends State<ModeAPlus> {
         _controllerRF2, (error) => setState(() => _errorRF2 = error));
     _validateAndUpdate(
         _controllerIF2, (error) => setState(() => _errorIF2 = error));
-  }
 
-  void _validateAndUpdate(
-      TextEditingController controller, Function(String?) setError) {
-    final int? value = _validateInput(controller.text, setError);
-    if (value != null) {
-      _calculateResults();
-    }
-  }
-
-  void _calculateResults() {
     final int? RF1 =
         _validateInput(_controllerRF1.text, (error) => _errorRF1 = error);
     final int? IF1 =
@@ -107,6 +97,46 @@ class _ModeAPlusState extends State<ModeAPlus> {
     return value;
   }
 
+  void _validateAndUpdate(
+      TextEditingController controller, Function(String?) setError) {
+    final int? value = _validateInput(controller.text, setError);
+    if (value != null) {
+      _calculateResults();
+    }
+  }
+
+  void _calculateResults() {
+    final int? RF1 =
+        _validateInput(_controllerRF1.text, (error) => _errorRF1 = error);
+    final int? IF1 =
+        _validateInput(_controllerIF1.text, (error) => _errorIF1 = error);
+    final int? RF2 =
+        _validateInput(_controllerRF2.text, (error) => _errorRF2 = error);
+    int? IF2 =
+        _validateInput(_controllerIF2.text, (error) => _errorIF2 = error);
+
+    if (_isDuplicate && IF1 != null) {
+      IF2 = IF1;
+      _controllerIF2.text = IF2.toString();
+    }
+
+    if (RF1 != null && IF1 != null) {
+      final int LO1 = RF1 + IF1;
+      _controllerLO1.text = LO1.toString();
+    } else {
+      _controllerLO1.text = '';
+    }
+
+    if (RF2 != null && IF2 != null) {
+      final int LO2 = RF2 + IF2;
+      _controllerLO2.text = LO2.toString();
+    } else {
+      _controllerLO2.text = '';
+    }
+
+    setState(() {});
+  }
+
   void _onDuplicateChanged(bool? value) {
     setState(() {
       _isDuplicate = value ?? false;
@@ -125,7 +155,7 @@ class _ModeAPlusState extends State<ModeAPlus> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Передавач (МГц)',
+            Text('Передавач (МГц) RF+IF=LO',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
             _buildTextField(
                 controller: _controllerRF1,
@@ -148,7 +178,7 @@ class _ModeAPlusState extends State<ModeAPlus> {
               ],
             ),
             SizedBox(height: 20),
-            Text('Приймач (МГц)',
+            Text('Приймач (МГц) RF+IF=LO',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
             _buildTextField(
                 controller: _controllerIF2,

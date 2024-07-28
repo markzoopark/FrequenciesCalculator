@@ -8,7 +8,7 @@ class ModeQuestion extends StatefulWidget {
 
 class _ModeQuestionState extends State<ModeQuestion> {
   final TextEditingController _controllerH1 = TextEditingController(text: '36');
-  final TextEditingController _controllerH2 = TextEditingController(text: '9');
+  final TextEditingController _controllerH2 = TextEditingController(text: '16');
   final TextEditingController _controllerR = TextEditingController();
   final TextEditingController _controllerF = TextEditingController(text: '300');
   final TextEditingController _controllerD = TextEditingController(text: '2.5');
@@ -44,22 +44,42 @@ class _ModeQuestionState extends State<ModeQuestion> {
 
   void _calculateRange() {
     final double h1 = double.tryParse(_controllerH1.text) ?? 36;
-    final double h2 = double.tryParse(_controllerH2.text) ?? 9;
+    final double h2 = double.tryParse(_controllerH2.text) ?? 16;
     final double R = 3.57 * (sqrt(h1) + sqrt(h2));
     _controllerR.text = R.toStringAsFixed(2);
     setState(() {});
   }
 
   void _calculateDipole() {
-    final double F = double.tryParse(_controllerF.text) ?? 300;
-    final double d = double.tryParse(_controllerD.text) ?? 2.5;
-    final double lambda = 300 / F;
-    _controllerLambda.text = lambda.toStringAsFixed(2);
-    final double L = 5 *
-        (0.9787011 +
-            (1 + 10.88627 * 0.9787011 + (0.0004490702 / d)) /
-                (1 + pow((F / 300), 0.5) + 1.792529 * log(d)));
-    _controllerL.text = L.toStringAsFixed(2);
+    final double F =
+        double.tryParse(_controllerF.text) ?? 3000; // F = 3000 МГц по умолчанию
+    final double d =
+        double.tryParse(_controllerD.text) ?? 2.5; // d = 2.5 мм по умолчанию
+    final double lambda = 300 / F; // Расчет длины волны в метрах
+    _controllerLambda.text = lambda.toStringAsFixed(6);
+
+    final double Rld = lambda / (0.001 * d); // Расчет Rld
+    final num exponent1 = pow(
+        (Rld / 0.0004490702), 1.792529); // Внутренний экспоненциальный расчет
+    final num denominatorBase =
+        exponent1 + 1; // Добавляем 1 перед возведением в степень
+    final num denominator =
+        pow(denominatorBase, 0.3004597); // Экспоненциальный расчет знаменателя
+    final double numerator = -10.88627 - 0.9787011;
+    final double k = 0.9787011 + (numerator / denominator); // Расчет k
+    final double L = 50 * k * (300 / F); // Расчет L
+
+    // Печать всех промежуточных значений для отладки
+    print("lambda: $lambda");
+    print("Rld: $Rld");
+    print("exponent1: $exponent1");
+    print("denominatorBase: $denominatorBase");
+    print("denominator: $denominator");
+    print("k: $k");
+    print("L: $L");
+
+    _controllerL.text =
+        L.toStringAsFixed(6); // 6 знаков после запятой для точности
   }
 
   @override
@@ -81,18 +101,17 @@ class _ModeQuestionState extends State<ModeQuestion> {
                 label: 'R (км)',
                 screenWidth: screenWidth),
             SizedBox(height: 20),
-            _buildSectionTitle('Розрахунок диполю (приблизний)',
-                'assets/dipole.png', screenWidth),
+            _buildSectionTitle(
+                'Розрахунок диполю', 'assets/dipole_lambda.png', screenWidth),
             _buildTextField(controller: _controllerF, label: 'F (МГц)'),
             _buildTextField(controller: _controllerD, label: 'd (мм)'),
             _buildResultField(
-                controller: _controllerLambda,
-                label: 'λ (м)',
-                additionalImage: 'assets/lambda.png',
-                screenWidth: screenWidth),
-            _buildResultField(
                 controller: _controllerL,
                 label: 'L (см)',
+                screenWidth: screenWidth),
+            _buildResultField(
+                controller: _controllerLambda,
+                label: 'λ (м)',
                 screenWidth: screenWidth),
           ],
         ),
